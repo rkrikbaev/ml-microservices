@@ -4,9 +4,12 @@
       "input":{                                                                 
         "model_name":"ARIMA",                                                   
         "model_dir":"./object_name.channel_name.model_name.unix_time",           
-        "rate":"1s"                                                             
+        "rate":"1s",
+        "source":"influxdb",
         "fields":{                                                              
-          "channel.raw":""                                                      
+          "channel.raw":"",
+          "channel.max":"", 
+          "channel.min":"" 
         }
       },
       "output":{                                                                
@@ -15,7 +18,7 @@
         "measurement":"object_name.channel_name.model_name.unix_time",         
           "fields":{                                                            
             "channel.live":"",                                                 
-            "channel.redic":"",                                                 
+            "channel.predic":"",                                                 
             "channel.mse_error":""                                             
             }
         }
