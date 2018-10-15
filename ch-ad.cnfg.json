@@ -2,7 +2,7 @@
   "object_name":{                                                               
     "channel_name":{                                                            
       "input":{
-        "driver":"flask-core"
+        "driver":"flask-core",
         "model_name":"ARIMA",                                                   
         "model_dir":"./object_name.channel_name.model_name.id",           
         "rate":"1s",
