@@ -1,9 +1,10 @@
 { 
   "object_name":{                                                               
     "channel_name":{                                                            
-      "input":{                                                                 
+      "input":{
+        "driver":"flask-core"
         "model_name":"ARIMA",                                                   
-        "model_dir":"./object_name.channel_name.model_name.unix_time",           
+        "model_dir":"./object_name.channel_name.model_name.id",           
         "rate":"1s",
         "source":"influxdb",
         "fields":{                                                              
@@ -15,13 +16,13 @@
       "output":{                                                                
         "node":"influxdb",                                                      
         "database":"model_data",                                                
-        "measurement":"object_name.channel_name.model_name.unix_time",         
+        "measurement":"object_name.channel_name.model_name.id",         
           "fields":{                                                            
             "channel.live":"",                                                 
             "channel.predic":"",                                                 
             "channel.mse_error":""                                             
-            }
+           }
         }
      }
-  }
+   }
 }
