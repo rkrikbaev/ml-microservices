@@ -1,28 +1,20 @@
-{ 
-  "object_name":{                                                               
-    "channel_name":{                                                            
-      "input":{
-        "driver":"flask-core",
-        "model_name":"ARIMA",                                                   
-        "model_dir":"./object_name.channel_name.model_name.id.pkl",           
-        "rate":"1s",
-        "source":"influxdb",
-        "fields":{                                                              
-          "channel.raw":"",
-          "channel.max":"", 
-          "channel.min":"" 
-        }
-      },
-      "output":{                                                                
-        "node":"influxdb",                                                      
-        "database":"model_data",                                                
-        "measurement":"object_name.channel_name.model_name.id",         
-          "fields":{                                                            
-            "channel.live":"",                                                 
-            "channel.predic":"",                                                 
-            "channel.mse_error":""                                             
-           }
-        }
-     }
-   }
+{
+  "flask-core": {
+    "influxdb": {
+      "database": "raw_data",
+      "measurement": "unit1",
+      "model_name": "ARIMA",
+      "model_dir": "/Users/abayaubakirov/Desktop/BACKUP ML SERVER/SprintML+Telegram/SARIMAX/pcd_sarimax_model.pkl",
+      "rate": "10s",
+      "data.raw": "pcd"
+    },
+    "model": {
+      "node": "influxdb",
+      "database": "model_data",
+      "measurement": "unit1..model_name.unix_time",
+      "pcd.live": "",
+      "pcd.predict": "",
+      "pcd.mse_error": ""
+    }
+  }
 }
