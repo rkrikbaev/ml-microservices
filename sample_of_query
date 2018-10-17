@@ -1,0 +1,1 @@
+query = 'SELECT * FROM '+DBNAME+'.autogen.meas WHERE time > now() - 1m ORDER BY time DESC LIMIT 1'
