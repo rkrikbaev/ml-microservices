@@ -6,44 +6,46 @@ from influxdb import InfluxDBClient, DataFrameClient
 header = {'Content-Type': 'application/json',\
                   'Accept': 'application/json'}
 
+source_conf = {"database": "raw_data",
+                   "measurement": "unit1",
+                   "raw_data": "pcd",
+                   "orderby": "time DESC LIMIT 1",
+                   "groupby": "time(1s)",
+                   "query":"query = 'SELECT pcd FROM db.autogen.meas WHERE time > now() - 1m ORDER BY time DESC LIMIT 1'"
+      }
 
+class Connector():
 
-class Influxdb():
+    def __init__(self, host, port, **kwargs):
 
-    def __init__(self, **kwargs):
+        self.host = host
+        self.port = port
 
-        self.NodeConfig = kwargs
-
-        self.query_body = query_body
-
-        self.body_to_write = body_to_write
-
-        self.measurement = measurement
-
-        self.client = InfluxDBClient(self.host, self.port, self.user, self.password)
+        self.client = InfluxDBClient(**kwargs)
 
     def time(self):
         self.dt = datetime.now().isoformat()
 
+        return None
 
-    def getdata(self):
+    def getdata(self,  source_conf, **kwargs):
 
+        data = dict(source_conf)
 
-        return self
+        self.result = self.client.query(**kwargs)
 
-    def writedata(self):
-        put_in_influx = [{
-            "measurement": self.measurement,
-            "tags": {"title": ""},
-            "time": self.dt,
-            "fields": self.body_to_write
-        }]
+        print(self.result)
 
-        self.client.write_points(put_in_influx)
+        #def writedata(self):
+        #    put_in_influx = [{
+        #        "measurement": self.measurement,
+        #        "tags": {"title": ""},
+        #        "time": self.dt,
+        #        "fields": self.body_to_write
+        #    }]
 
-#class getConfig(object):
-#    def __init__(self, files = "./"):
-#        self.files = files                      #list of files with configuration
-#    def readJsonFile(self, **kwarg):
+        #   self.client.write_points(put_in_influx)
 
+a = Connector(host='192.168.4.33', port=8086)
 
+a.getdata(source_conf)
