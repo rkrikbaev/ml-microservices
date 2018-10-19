@@ -1,0 +1,7 @@
+<application>
+  <component name="FindSettings">
+    <option name="customScope" value="File '.../expressions.py [InfluxTCPsocketClient]'" />
+    <option name="defaultScopeName" value="File '.../expressions.py [InfluxTCPsocketClient]'" />
+    <option name="SEARCH_SCOPE" value="File '.../expressions.py [InfluxTCPsocketClient]'" />
+  </component>
+</application>
