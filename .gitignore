@@ -8,5 +8,5 @@ env.bak/
 venv.bak/
 /venv/
 
-#
+# Project folders
 /.idea/
