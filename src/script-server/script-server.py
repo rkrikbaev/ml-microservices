@@ -1,12 +1,13 @@
-#!/user/bin/python3.5
+#!/user/bin/python3
 import warnings
 import itertools
 import pandas as pd
+
 from influxdb import InfluxDBClient, DataFrameClient
 import json
 import requests
 import time
-from serverClass import Channel_object
+from baselib.com import Channel
 
 
 all_copies_of_object = []
@@ -56,7 +57,7 @@ def iniatialize():
         ch_name_dest_3 = json_file[obj_id]["destination_fields"]["mse_error"]
 
 
-        all_copies_of_object.append(Channel_object(ch_name, SRC_ip_addr, SRC_port, SRC_username, SRC_userpass, OUT_ip_addr, OUT_port, OUT_username, OUT_userpass, SRC_node, SRC_database, SRC_measurement, model_name, model_dir, OUT_node, OUT_database, OUT_measurement, ML_core_ip_addr, ML_core_port,ML_core_type, query, ch_name_dest_1, ch_name_dest_2, ch_name_dest_3))
+        all_copies_of_object.append(Channel(ch_name, SRC_ip_addr, SRC_port, SRC_username, SRC_userpass, OUT_ip_addr, OUT_port, OUT_username, OUT_userpass, SRC_node, SRC_database, SRC_measurement, model_name, model_dir, OUT_node, OUT_database, OUT_measurement, ML_core_ip_addr, ML_core_port,ML_core_type, query, ch_name_dest_1, ch_name_dest_2, ch_name_dest_3))
 
 
 if __name__ == "__main__":
@@ -73,7 +74,22 @@ if __name__ == "__main__":
 
             object.put_preprocessed_data_to_db()
 
-
-
-
         time.sleep(5)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

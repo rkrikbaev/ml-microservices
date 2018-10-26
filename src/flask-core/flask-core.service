@@ -1,0 +1,18 @@
+[Unit]
+Description=Flask web service for ML-core
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/script-server/src/flask-core/
+
+ExecStart=/bin/bash ./service.sh start
+
+RemainAfterExit=true
+
+ExecStop=/bin/bash ./service.sh stop
+
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

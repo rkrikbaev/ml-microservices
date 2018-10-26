@@ -3,7 +3,7 @@
 #BIN_DIR=
 #DATA_DIR=
 #LOG_DIR=
-SCRIPT_DIR=/opt/script-server/src/script-server
+SCRIPT_DIR=/opt/script-server/src/flask-core
 #LOGROTATE_DIR=/etc/logrotate.d
 
 #function install_init {
@@ -29,4 +29,5 @@ if [[ $? -eq 0 ]]; then
 		install_chkconfig
 		echo 2
 	fi
+
 

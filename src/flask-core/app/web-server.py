@@ -1,19 +1,30 @@
-# from sklearn.externals import joblib             #The scikit-learn version is 0.19.1.
-from flask import Flask, jsonify, request, Response
-# from flask import render_template
-#import requests
-import json
-# from datetime import datetime, timedelta
+#! /usr/bin/python3
+
+import pickle
+#import baselib_aux as bz
 import numpy as np
 import pandas as pd
-import statsmodels.api as sm
 import statsmodels
-from statsmodels.tsa.holtwinters import ExponentialSmoothing, Holt
+import statsmodels.api as sm
+from flask import Flask, request
 from sklearn.metrics import mean_squared_error as mse
-import pickle
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
 app = Flask(__name__)
 
+@app.route('/init', methods = ['POST', 'GET'])
+
+def setConfig():
+    try:
+        data = request.get_json()
+
+    except Exception as e:
+        raise e
+
+    returning_data = list()
+    mse =1
+    returning_data.append(data.values.tolist()[0])
+    returning_data.append(mse)
 
 
 @app.route('/ARIMA', methods = ['POST'])
@@ -23,7 +34,6 @@ def apicall_two(responses2 = None):
     try:
 
         test_json = request.get_json()
-
 
         gotten_data_as_df_with_model_dir = pd.read_json(test_json, orient='columns')
 
@@ -43,7 +53,6 @@ def apicall_two(responses2 = None):
     except Exception as e:
 
         raise e
-
 
     results_of_model = statsmodels.tsa.statespace.sarimax.SARIMAXResults.load(model_dir)
 
@@ -77,7 +86,7 @@ def apicall_two(responses2 = None):
     return str(returning_data)
 
 
-@app.route('/HOLTWINTER', methods = ['POST'])
+@app.route('/HOLTWINTER', methods = ['POST', 'GET'])
 
 def apicall_t(responses2 = None):
 
@@ -90,8 +99,6 @@ def apicall_t(responses2 = None):
         model_dir = str(gotten_data_as_df_with_model_dir.model_dir.unique()[0])
 
         gotten_data_df = gotten_data_as_df_with_model_dir.drop(['model_dir'], axis=1)
-
-
 
     except Exception as e:
 
@@ -114,12 +121,9 @@ def apicall_t(responses2 = None):
 
     return str(returning_data)
 
-
-
-
 if __name__ == '__main__':
-    #iniatialize()
-    app.run(host="0.0.0.0")
+
+    app.run(host="0.0.0.0", port=5003 )
 
 
 

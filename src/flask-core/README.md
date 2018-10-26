@@ -1,1 +1,1 @@
-Server all in C with new verision of Config file 
+All what are needed for flask-core operation are here.
