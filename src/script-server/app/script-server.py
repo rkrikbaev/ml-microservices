@@ -7,7 +7,7 @@ from influxdb import InfluxDBClient, DataFrameClient
 import json
 import requests
 import time
-from baselib.com import Channel
+from baselib_com import Channel
 
 
 all_copies_of_object = []
