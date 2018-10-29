@@ -1,4 +1,3 @@
 #! /bin/bash
 
-systemctl start flask.service
-systemctl start flask-core.service
+systemctl start flask-core.service   #запуск сервиса
