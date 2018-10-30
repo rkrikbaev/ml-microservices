@@ -1,80 +1,42 @@
 #!/user/bin/python3
-import warnings
-import itertools
-import pandas as pd
 
-from influxdb import InfluxDBClient, DataFrameClient
-import json
-import requests
+from socket import *
+import json, os
 import time
-from baselib_com import Channel
+from datetime import tzinfo, timedelta, datetime
+import argparse
 
+from baselib_com import Config, LinkData, Flow
 
-all_copies_of_object = []
+import _thread
 
+def download_info(**kwargs):
+    pass
 
-def iniatialize():
+def workflow(**kwargs):
+    source_info = kwargs['source_info']
+    model_info = kwargs['model_info']
+    store_info = kwargs['store_info']
+    source_data = LinkData.getdata(source_info)
+    model_data = Flow.execute(source_data, model_info)
+    store_data = LinkData.writedata(model_data, store_info)
+    return source_data, model_data, store_data
 
-    with open('model.conf') as f:
-        json_file = json.load(f)
+def main():
 
-    object_ids = json_file.keys()
-    print("all object names: ", object_ids)
-    for obj_id in object_ids:
+    print("start")
+    a = Config()
+    source_conf, model_conf, store_conf = a.getInfo(file='./config.conf')
+    print(source_conf, model_conf, store_conf)
 
-        ch_name = json_file[obj_id]["source_fields"]["raw_data"]
+    try:
+        _thread.start_new(workflow(a[0]),)
+        _thread.start_new(workflow(a[1]),)
+    except Exception as e:
+        print(e)
 
-        SRC_ip_addr = json_file[obj_id]["source_fields"]["host"]
-        SRC_port = json_file[obj_id]["source_fields"]["port"]
-        SRC_username = json_file[obj_id]["source_fields"]["username"]
-        SRC_userpass = json_file[obj_id]["source_fields"]["password"]
-
-        SRC_node = json_file[obj_id]["source_fields"]["node"]
-        SRC_measurement = json_file[obj_id]["source_fields"]["measurement"]
-        SRC_database = json_file[obj_id]["source_fields"]["database"]
-
-        OUT_ip_addr = json_file[obj_id]["destination_fields"]["host"]
-        OUT_port = json_file[obj_id]["destination_fields"]["port"]
-        OUT_username = json_file[obj_id]["destination_fields"]["username"]
-        OUT_userpass = json_file[obj_id]["destination_fields"]["password"]
-
-        OUT_node = json_file[obj_id]["destination_fields"]["node"]
-        OUT_database = json_file[obj_id]["destination_fields"]["database"]
-        OUT_measurement = json_file[obj_id]["destination_fields"]["measurement"]
-
-
-        ML_core_type = json_file[obj_id]["model_fields"]["ml-core"]
-        model_name = json_file[obj_id]["model_fields"]["name"]
-        model_dir = json_file[obj_id]["model_fields"]["path"]
-        ML_core_ip_addr = json_file[obj_id]["model_fields"]["host"]
-        ML_core_port = json_file[obj_id]["model_fields"]["port"]
-
-        query = json_file[obj_id]["source_fields"]["query"]
-
-
-        ch_name_dest_1 = json_file[obj_id]["destination_fields"]["raw_data"]
-        ch_name_dest_2 = json_file[obj_id]["destination_fields"]["predict_value"]
-        ch_name_dest_3 = json_file[obj_id]["destination_fields"]["mse_error"]
-
-
-        all_copies_of_object.append(Channel(ch_name, SRC_ip_addr, SRC_port, SRC_username, SRC_userpass, OUT_ip_addr, OUT_port, OUT_username, OUT_userpass, SRC_node, SRC_database, SRC_measurement, model_name, model_dir, OUT_node, OUT_database, OUT_measurement, ML_core_ip_addr, ML_core_port,ML_core_type, query, ch_name_dest_1, ch_name_dest_2, ch_name_dest_3))
-
-
-if __name__ == "__main__":
-
-    iniatialize()
-
-    while True:
-
-        for object in all_copies_of_object:
-
-            object.get_raw_data_from_source()
-
-            object.send_raw_data_to_ml()
-
-            object.put_preprocessed_data_to_db()
-
-        time.sleep(5)
+if __name__ == '__main__':
+            main()
 
 
 

@@ -1,5 +1,4 @@
 #! /usr/bin/python3
-
 import pickle
 
 import numpy as np
@@ -123,7 +122,7 @@ def apicall_t(responses2 = None):
 
 if __name__ == '__main__':
 
-    app.run(host="0.0.0.0", port=5003)
+    app.run(debug=True, host="0.0.0.0", port=5003)
 
 
 
