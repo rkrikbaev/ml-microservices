@@ -1,30 +1,24 @@
 #!/user/bin/python3
 import json
 from influxdb import InfluxDBClient, DataFrameClient
-import MySQLdb
 
 header = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 
-
 class Config(object):
 	id = 0
-	source_info = None
-	model_info = None
-	dest_info = None
-	def _loadInfo(self, file):
-		global id, source_fields, model_fields,dest_fields
+	def loadInfo(self, **kwargs):
+		file = kwargs['file']
+		source_info = []
+		model_info = []
+		dest_info = []
 		with open(file, 'r') as fp:
 			list = json.load(fp)
 			id = list.keys()
 		for id in list:
-			source_info = list[id]["source_fields"]
-			model_info = list[id]["model_fields"]
-			dest_info = list[id]["destination_fields"]
+			source_info.append(list[id]["source_fields"])
+			model_info.append(list[id]["model_fields"])
+			dest_info.append(list[id]["destination_fields"])
 		return source_info, model_info, dest_info
-
-	def getInfo(self, **kwargs):
-		file = kwargs['file']
-		return self._loadInfo(file)
 
 class LinkData(object):
 	def __init__(self, **kwargs):
@@ -42,17 +36,11 @@ class LinkData(object):
 		print(data_as_df)
 		return data_as_df
 
-	def _MySQLClient(self):
-		pass
-		return print('MySQL plugin')
-
 	def getData(self, node=None):
 
 		if node == 'influxdb':
 			print('influxdb')
 			data = self._InfluxDfClient()
-		if node == 'mysql':
-			data = self._MySQLClient()
 		else:
 			pass
 		return print(data)
