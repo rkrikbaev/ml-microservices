@@ -1,7 +1,7 @@
 #!/home/user/anaconda3/bin/python
 import json
 import requests
-import mysql.connector
+#import mysql.connector
 import datetime
 
 header = {'Content-Type': 'application/json', \
@@ -50,11 +50,11 @@ class Link():
 
             return self.influx_get_data_as_df()
 
-        if (self.type_of_link == "mysql"):
-
-            self.mysql_get_data(query)
-
-            return self.influx_get_data_as_df()      # <<<<<<<<<<<< CHANGE   CHANGE
+        #if (self.type_of_link == "mysql"):
+        #
+         #   self.mysql_get_data(query)
+        #
+         #   return self.influx_get_data_as_df()      # <<<<<<<<<<<< CHANGE   CHANGE
 
 
 
@@ -62,9 +62,9 @@ class Link():
 
 ################ MYSQL queries
 
-    def mysql_get_data(self):
-
-        cursor = self.client.cursor()
+ #   def mysql_get_data(self):
+#
+  #      cursor = self.client.cursor()
 
 
 
@@ -115,7 +115,7 @@ class Link():
             df_tag = self.influx_convert_to_df_first(data_to_df)
 
         self.current_time = pd.to_datetime(df_tag.index.values[-1])
-
+        print(type(df_tag))
         return df_tag
 
 
