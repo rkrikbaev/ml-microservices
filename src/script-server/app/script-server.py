@@ -1,80 +1,91 @@
 #!/user/bin/python3
-import warnings
-import itertools
-import pandas as pd
-
-from influxdb import InfluxDBClient, DataFrameClient
-import json
-import requests
+"""
+Скрипт для запуска процессов workflow
+"""
 import time
-from baselib_com import Channel
+import argparse
+from baselib import Link, Model, Config
+from auxlib import DateTime
+import _thread
+
+dt = DateTime()
+
+def workflow(*kwargs):
+
+    source_info = kwargs[0]
+    model_info = kwargs[1]
+    store_info = kwargs[2]
+    delay = kwargs[3]
+    id = kwargs[4]
+
+    source_host = str(source_info['host'])
+    source_port = source_info['port']
+    source_node = source_info['node']
+    source_user = source_info['user']
+    source_password = source_info['password']
+    source_query = '{0}'.format(source_info['query'])
+    source_database = source_info['database']
+    source_tag = source_info['tag']
+
+    model_host = str(model_info['host'])
+    model_port = model_info['port']
+    model_node = model_info['node']
+    model_core = model_info['ml-core']
+    model_path = model_info['path']
+    model_name = model_info['model']
+
+    store_host = store_info['host']
+    store_port = store_info['port']
+    store_node = store_info['node']
+    store_database = store_info['database']
+    store_query = '{0}'.format(store_info['query'])
+    store_user = store_info['user']
+    store_password = store_info['password']
+    inlink = Link(source_host, source_port, source_user, source_password, id)
+    model = Model(model_host, model_port, model_node, model_core, id)
+    outLink = Link(store_host, store_port, store_user, store_password, id)
+
+    count =0
+
+    while 1:
+        time.sleep(delay)
+        try:
+            #print('Query data from {0}.{1}'.format(source_node, source_database))
+            source_data = inlink.getData(source_query, source_node, source_database)
+            #print('Output as source data', source_data)
+            model_data = model.execModel(model_path, model_name, source_data, source_tag)
+            #print('Output as model_data', model_data)
+            outLink.putData(model_data, store_node, store_database)
+            #print("Write data to datbase")
+            count += 1
+        except Exception as e:
+            print("%s Error in flow: %s" % (id,str(e)))
+        finally:
+            print('Count: {0}, time: {1}'.format(count, dt.utc_time()), id)
+
+def main():
+    global dt
+    print("Start")
+    print('Read configuration file')
+    config = Config().getInfo(file='./config.conf')
+
+    id_names = config.keys()
 
 
-all_copies_of_object = []
+    try:
+        print('Thread started at: ', dt.utc_time())
 
+        for i in id_names:
+            _thread.start_new_thread(workflow, (config[i]['source'], config[i]['model'], config[i]['destination'], config[i]['model']['delay'], config[i]['id_name']))
+    except Exception as e:
+        print("Error: unable to start thread" + str(e))
+    while 1:
+        time.sleep(80)
+        print('pass')
+        pass
 
-def iniatialize():
-
-    with open('model.conf') as f:
-        json_file = json.load(f)
-
-    object_ids = json_file.keys()
-    print("all object names: ", object_ids)
-    for obj_id in object_ids:
-
-        ch_name = json_file[obj_id]["source_fields"]["raw_data"]
-
-        SRC_ip_addr = json_file[obj_id]["source_fields"]["host"]
-        SRC_port = json_file[obj_id]["source_fields"]["port"]
-        SRC_username = json_file[obj_id]["source_fields"]["username"]
-        SRC_userpass = json_file[obj_id]["source_fields"]["password"]
-
-        SRC_node = json_file[obj_id]["source_fields"]["node"]
-        SRC_measurement = json_file[obj_id]["source_fields"]["measurement"]
-        SRC_database = json_file[obj_id]["source_fields"]["database"]
-
-        OUT_ip_addr = json_file[obj_id]["destination_fields"]["host"]
-        OUT_port = json_file[obj_id]["destination_fields"]["port"]
-        OUT_username = json_file[obj_id]["destination_fields"]["username"]
-        OUT_userpass = json_file[obj_id]["destination_fields"]["password"]
-
-        OUT_node = json_file[obj_id]["destination_fields"]["node"]
-        OUT_database = json_file[obj_id]["destination_fields"]["database"]
-        OUT_measurement = json_file[obj_id]["destination_fields"]["measurement"]
-
-
-        ML_core_type = json_file[obj_id]["model_fields"]["ml-core"]
-        model_name = json_file[obj_id]["model_fields"]["name"]
-        model_dir = json_file[obj_id]["model_fields"]["path"]
-        ML_core_ip_addr = json_file[obj_id]["model_fields"]["host"]
-        ML_core_port = json_file[obj_id]["model_fields"]["port"]
-
-        query = json_file[obj_id]["source_fields"]["query"]
-
-
-        ch_name_dest_1 = json_file[obj_id]["destination_fields"]["raw_data"]
-        ch_name_dest_2 = json_file[obj_id]["destination_fields"]["predict_value"]
-        ch_name_dest_3 = json_file[obj_id]["destination_fields"]["mse_error"]
-
-
-        all_copies_of_object.append(Channel(ch_name, SRC_ip_addr, SRC_port, SRC_username, SRC_userpass, OUT_ip_addr, OUT_port, OUT_username, OUT_userpass, SRC_node, SRC_database, SRC_measurement, model_name, model_dir, OUT_node, OUT_database, OUT_measurement, ML_core_ip_addr, ML_core_port,ML_core_type, query, ch_name_dest_1, ch_name_dest_2, ch_name_dest_3))
-
-
-if __name__ == "__main__":
-
-    iniatialize()
-
-    while True:
-
-        for object in all_copies_of_object:
-
-            object.get_raw_data_from_source()
-
-            object.send_raw_data_to_ml()
-
-            object.put_preprocessed_data_to_db()
-
-        time.sleep(5)
+if __name__ == '__main__':
+    main()
 
 
 

@@ -35,4 +35,6 @@ EOF
 apt-get install -y $PACKAGES
 apt-get clean
 
-ln -sr ./conf.d/config.conf ./app
+ln -sr ./src/conf.d/config.conf ./src/flask-core/app
+ln -sr ./src/conf.d/config.conf ./src/tf-core/app
+ln -sr ./src/conf.d/config.conf ./src/script-server/app
