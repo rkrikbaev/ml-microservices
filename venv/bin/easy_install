@@ -1,4 +1,4 @@
-#!/Users/rustamkrikbayev/PycharmProjects/workflow/venv/bin/python
+#!/Users/rustamkrikbayev/PycharmProjects/ml-microservices/venv/bin/python
 # EASY-INSTALL-ENTRY-SCRIPT: 'setuptools==39.1.0','console_scripts','easy_install'
 __requires__ = 'setuptools==39.1.0'
 import re
