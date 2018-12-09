@@ -6,6 +6,7 @@
       <mapping ext="conf" type="JSON" />
       <mapping ext="cnfg" type="JSON" />
       <mapping pattern=".gitignor" type="PLAIN_TEXT" />
+      <mapping pattern="nmea" type="PLAIN_TEXT" />
       <mapping pattern="notes" type="PLAIN_TEXT" />
       <mapping pattern="ln" type="PLAIN_TEXT" />
     </extensionMap>
